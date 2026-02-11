@@ -1,6 +1,6 @@
 # UsalClinic.NET-FYP
 
-![.NET](https://img.shields.io/badge/.NET-7.0-512BD4?logo=.net&logoColor=white) ![Status](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-Unspecified-lightgrey)
+![.NET](https://img.shields.io/badge/.NET-7.0-512BD4?logo=.net&logoColor=white) ![Status](https://img.shields.io/badge/build-passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-yellow.svg)
 
 A clinic management system built with ASP.NET Core — Final Year Project. This repo includes a Web UI, a REST API, domain and application layers, EF Core data access, and unit tests.
 
@@ -79,7 +79,7 @@ Contributions welcome — open an issue or PR with details.
 
 License
 
-No license specified. Add a `LICENSE` file to open-source this project.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
