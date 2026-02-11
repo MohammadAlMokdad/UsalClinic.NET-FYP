@@ -1,0 +1,257 @@
+﻿@model IEnumerable<UsalClinic.Web.ViewModels.RoomViewModel>
+@{
+    ViewData["Title"] = "Rooms";
+}
+
+<style>
+    /* Gradient table header */
+    .table thead tr {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Hover effect for table rows */
+    .table tbody tr:hover {
+        background-color: #e0f7ff;
+    }
+
+    /* Button styles */
+    .btn-primary {
+        background-color: #007acc;
+        border-color: #007acc;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background-color: #005fa3;
+        border-color: #005fa3;
+        box-shadow: none;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+
+    .btn-warning:hover,
+    .btn-warning:focus {
+        background-color: #d39e00;
+        border-color: #d39e00;
+        color: #212529;
+        box-shadow: none;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover,
+    .btn-danger:focus {
+        background-color: #b02a37;
+        border-color: #b02a37;
+        box-shadow: none;
+    }
+
+    .btn i {
+        vertical-align: middle;
+        margin-right: 0.25rem;
+    }
+</style>
+
+<h2 class="mb-4 text-center">Room Management</h2>
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-primary" asp-action="Create">
+        <i class="bi bi-plus-circle"></i> Add New Room
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Available</th>
+                <th>Description</th>
+                <th>Department</th>
+                <th>Created At</th>
+                <th style="width: 160px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var room in Model)
+                {
+                    <tr>
+                        <td>@room.RoomNumber</td>
+                        <td>@room.RoomType</td>
+                        <td>@(room.IsAvailable ? "Yes" : "No")</td>
+                        <td>@room.Description</td>
+                        <td>@room.DepartmentId</td> <!-- You can replace with name if available -->
+                        <td>@room.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm btn-edit me-1" data-id="@room.Id" title="Edit Room">
+                                <i class="bi bi-pencil"></i> Edit
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="@room.Id" title="Delete Room">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" class="text-center">No rooms available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Edit Room Modal (loads partial dynamically) -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc); color: white; font-weight: 700;">
+                <h5 class="modal-title" id="editModalLabel">Edit Room</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- Partial content injected here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc3545, #b02a37); color: white; font-weight: 700;">
+                <h5 class="modal-title" id="deleteConfirmLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this room?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable({
+                pageLength: 10,
+                order: []
+            });
+        });
+    </script>
+    <script>
+                        // Extract CSRF token from the hidden input on the page
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        // Globally add CSRF token to all fetch() or AJAX calls if needed
+        function getCsrfHeaders() {
+            return csrfToken
+                ? { 'RequestVerificationToken': csrfToken }
+                : {};
+        }
+        // Edit modal with access denied handling
+        $(document).on('click', '.btn-edit', function () {
+            const id = $(this).data('id');
+
+            fetch(`/Rooms/Edit/${id}`)
+                .then(res => {
+                    if (res.redirected) {
+                        window.location.href = res.url;
+                        return null;
+                    }
+
+                    if (res.status === 403) {
+                        window.location.href = '/Account/AccessDenied';
+                        return null;
+                    }
+
+                    return res.text();
+                })
+                .then(html => {
+                    if (!html) return;
+
+                    if (html.includes("<title>Access Denied</title>") || html.toLowerCase().includes("access denied")) {
+                        window.location.href = '/Account/AccessDenied';
+                        return;
+                    }
+
+                    $('#editModalBody').html(html);
+                    new bootstrap.Modal(document.getElementById('editModal')).show();
+                    $.validator.unobtrusive.parse($('#editModal'));
+                });
+        });
+
+        // Delete modal trigger
+        $(document).on('click', '.btn-delete', function () {
+            const id = $(this).data('id');
+            $('#confirmDeleteBtn').attr('href', '/Rooms/Delete/' + id);
+            new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+        });
+                // Intercept form submission inside modals
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (form.closest('#editModal')) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: { 
+                        'X-Requested-With': 'XMLHttpRequest'
+                        ...getCsrfHeaders()
+                    }
+                })
+                .then(res => {
+                    if (res.status === 200) return res.text();
+                    if (res.redirected) {
+                        window.location.href = res.url;
+                        return null;
+                    }
+                    if (res.status === 403) {
+                        window.location.href = '/Account/AccessDenied';
+                        return null;
+                    }
+                })
+                .then(html => {
+                    if (!html) return;
+
+                    if (html.includes('<form') && html.toLowerCase().includes('validation-summary')) {
+                        // Validation error — re-render form inside modal
+                        document.getElementById('editModalBody').innerHTML = html;
+                        $.validator.unobtrusive.parse($('#editModal'));
+                    } else {
+                        // Success — close modal & reload page or update UI
+                        location.reload();
+                    }
+                })
+                .catch(() => location.reload());
+            }
+        });
+    </script>
+}
+

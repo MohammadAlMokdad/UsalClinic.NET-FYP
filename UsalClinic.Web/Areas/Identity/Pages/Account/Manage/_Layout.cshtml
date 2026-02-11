@@ -1,0 +1,62 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    }
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        font-family: Arial, sans-serif;
+    }
+
+    body > footer {
+        background: white;
+    }
+
+    .manage-account-container {
+        max-width: 1100px;
+        margin: 80px auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .manage-account-container h1,
+    .manage-account-container h2 {
+        color: #005f8d;
+        font-weight: bold;
+    }
+
+    .nav-link.active {
+        color: #00a1cb !important;
+        font-weight: bold;
+    }
+</style>
+
+<div class="manage-account-container">
+    <h1>Manage your account</h1>
+
+    <div>
+        <h2>Change your account settings</h2>
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <partial name="_ManageNav" />
+            </div>
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

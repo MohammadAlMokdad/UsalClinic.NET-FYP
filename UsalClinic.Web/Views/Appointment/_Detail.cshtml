@@ -1,0 +1,33 @@
+﻿@model UsalClinic.Web.ViewModels.AppointmentViewModel
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h5 class="text-primary">Appointment Details</h5>
+            <hr />
+        </div>
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-4">Doctor</dt>
+        <dd class="col-sm-8">@Model.DoctorName</dd>
+
+        <dt class="col-sm-4">Patient</dt>
+        <dd class="col-sm-8">@Model.PatientName</dd>
+
+        <dt class="col-sm-4">Appointment Date</dt>
+        <dd class="col-sm-8">@Model.AppointmentDate.ToString("f")</dd>
+
+        <dt class="col-sm-4">Status</dt>
+        <dd class="col-sm-8">@Model.Status</dd>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Notes))
+        {
+            <dt class="col-sm-4">Notes</dt>
+            <dd class="col-sm-8">@Model.Notes</dd>
+        }
+
+        <dt class="col-sm-4">Created At</dt>
+        <dd class="col-sm-8">@Model.CreatedAt.ToString("f")</dd>
+    </dl>
+</div>

@@ -1,0 +1,339 @@
+﻿@model UsalClinic.Web.ViewModels.MedicalRecordViewModel
+@{
+    ViewData["Title"] = "Medical Record Details";
+    var prescriptions = ViewBag.Prescriptions as List<UsalClinic.Application.Models.PrescriptionDto>;
+    var medicalRecordId = ViewBag.MedicalRecordId;
+    var patientId = ViewBag.PatientId;
+    var hasRecord = Model != null;
+}
+
+<style>
+    /* Gradient header for section titles */
+    h2, h4 {
+        color: #007acc;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    /* Card styling */
+    .card {
+        border: none;
+        box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+        margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+        color: #005fa3;
+        font-weight: 600;
+    }
+
+    .card-body p {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    /* Buttons styling */
+    .btn-primary {
+        background-color: #007acc;
+        border-color: #007acc;
+    }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #005fa3;
+            border-color: #005fa3;
+            box-shadow: none;
+        }
+
+    .btn-outline-primary {
+        color: #007acc;
+        border-color: #007acc;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #007acc;
+            color: white;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+
+        .btn-warning:hover {
+            background-color: #d39e00;
+            border-color: #d39e00;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background-color: #b02a37;
+            border-color: #b02a37;
+        }
+
+    /* Table styling */
+    .table thead {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 600;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e0f7ff;
+    }
+
+    /* Modal header */
+    .modal-header {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 700;
+        border-bottom: none;
+    }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!hasRecord)
+{
+    <div class="alert alert-warning text-center">
+        <p>This patient does not have a medical record yet.</p>
+        <a asp-action="CreateMedical" asp-controller="MedicalRecords" asp-route-patientId="@patientId" class="btn btn-primary mt-2">
+            <i class="bi bi-plus-circle"></i> Create Medical Record
+        </a>
+    </div>
+}
+else
+{
+    @if (!User.IsInRole("Patient"))
+    {
+        <div class="mb-3 text-start">
+            <a asp-controller="Patient"
+               asp-action="Index"
+               asp-route-id="@patientId"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Patient
+            </a>
+        </div>
+    }
+
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Patient: @Model.PatientName</h5>
+            <p><strong>Doctor:</strong> @Model.DoctorName</p>
+            <p><strong>Diagnosis:</strong> @Model.Diagnosis</p>
+            <p><strong>Prescription Summary:</strong> @Model.Prescription</p>
+            <p><strong>Notes:</strong> @Model.Notes</p>
+            <p><strong>Created At:</strong> @Model.CreatedAt.ToString("g")</p>
+        </div>
+    </div>
+
+    @if (!User.IsInRole("Patient"))
+    {
+        <a asp-controller="Prescription"
+           asp-action="CreateForRecord"
+           asp-route-medicalRecordId="@Model.Id"
+           class="btn btn-outline-primary">
+            <i class="bi bi-plus-circle"></i> Add Prescription
+        </a>
+    }
+
+
+    @if (prescriptions != null && prescriptions.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Medication</th>
+                        <th>Dosage</th>
+                        <th>Instructions</th>
+                        <th>Created</th>
+                        @if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
+                        {
+                            <th style="width: 150px;">Actions</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in prescriptions)
+                    {
+                        <tr>
+                            <td>@item.MedicationName</td>
+                            <td>@item.Dosage</td>
+                            <td>@item.Instructions</td>
+                            <td>@item.CreatedAt.ToShortDateString()</td>
+                            @if (User.IsInRole("Doctor") || User.IsInRole("Admin"))
+                            {
+                                <td>
+                                    <button class="btn btn-sm btn-warning me-1 btn-edit" data-id="@item.Id" title="Edit Prescription">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger btn-delete" data-id="@item.Id" data-med="@item.MedicationName" title="Delete Prescription">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Prescription</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="editModalBody">
+                        <!-- AJAX _Edit partial loads here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Delete</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete the prescription: <strong id="deletePrescriptionName"></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted text-center">No prescriptions found.</p>
+    }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+                        // Extract CSRF token from the hidden input on the page
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        // Globally add CSRF token to all fetch() or AJAX calls if needed
+        function getCsrfHeaders() {
+            return csrfToken
+                ? { 'RequestVerificationToken': csrfToken }
+                : {};
+        }
+        // Edit modal with access denied and fetch handling
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+
+                fetch(`/Prescription/Edit/${id}`)
+                    .then(res => {
+                        if (res.redirected) {
+                            window.location.href = res.url;
+                            return null;
+                        }
+                        if (res.status === 403) {
+                            window.location.href = '/Account/AccessDenied';
+                            return null;
+                        }
+                        return res.text();
+                    })
+                    .then(html => {
+                        if (!html) return;
+
+                        if (html.includes("<title>Access Denied</title>") || html.toLowerCase().includes("access denied")) {
+                            window.location.href = '/Account/AccessDenied';
+                            return;
+                        }
+
+                        // Load HTML into modal body
+                        document.getElementById('editModalBody').innerHTML = html;
+
+                        // Re-parse validation for the new form inside the modal
+                        $.validator.unobtrusive.parse($('#editModalBody form'));
+
+                        // Show the modal
+                        new bootstrap.Modal(document.getElementById('editModal')).show();
+                    });
+            });
+        });
+
+        // Delete confirmation modal logic
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const medName = btn.getAttribute('data-med');
+
+                document.getElementById('deletePrescriptionName').textContent = medName;
+                document.getElementById('confirmDeleteBtn').setAttribute('href', `/Prescription/DeleteMedical/${id}?patientId=@patientId`);
+
+                new bootstrap.Modal(document.getElementById('deleteModal')).show();
+            });
+        });
+
+        // Intercept form submission inside the edit modal
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (form.closest('#editModal')) {
+                e.preventDefault(); // prevent full-page reload
+
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: { 
+                        'X-Requested-With': 'XMLHttpRequest',
+                        ...getCsrfHeaders()
+                    }
+                })
+                .then(res => {
+                    if (res.status === 200) {
+                        return res.text();
+                    } else if (res.redirected) {
+                        window.location.href = res.url;
+                        return null;
+                    } else if (res.status === 403) {
+                        window.location.href = '/Account/AccessDenied';
+                        return null;
+                    }
+                })
+                .then(html => {
+                    if (!html) return;
+
+                    if (html.includes('<form') && html.toLowerCase().includes('validation-summary')) {
+                        // Server returned form with validation errors, re-render modal content
+                        document.getElementById('editModalBody').innerHTML = html;
+                        $.validator.unobtrusive.parse($('#editModalBody form'));
+                    } else {
+                        // Success – reload page or you can update UI accordingly
+                        location.reload();
+                    }
+                })
+                .catch(() => {
+                    // Fallback on error
+                    location.reload();
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,112 @@
+@model UsalClinic.Web.ViewModels.ShiftViewModel
+
+@{
+    ViewData["Title"] = "Create Shift";
+}
+
+<style>
+    h2 {
+        color: #007acc;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+
+    form.shift-form {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 15px rgba(0, 122, 204, 0.2);
+    }
+
+    .btn-primary {
+        background-color: #007acc;
+        border-color: #007acc;
+    }
+
+    .btn-secondary {
+        background-color: #00a1cb;
+        border-color: #00a1cb;
+        color: white;
+    }
+</style>
+
+<h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label for="Role" class="form-label">Role</label>
+        <select id="Role" name="Role" class="form-control">
+            <option value="">Select Role</option>
+            <option value="Doctor">Doctor</option>
+            <option value="Nurse">Nurse</option>
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="StaffId" class="form-label">Staff</label>
+        <select id="StaffId" name="StaffId" class="form-control"></select>
+        <span asp-validation-for="StaffId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Days of Week</label>
+        <div>
+            @foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" name="DaysOfWeek" value="@day" />
+                    <label class="form-check-label">@day</label>
+                </div>
+            }
+        </div>
+        <span asp-validation-for="DaysOfWeek" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="StartTime" class="form-label">Start Time</label>
+        <input asp-for="StartTime" class="form-control" type="time" />
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EndTime" class="form-label">End Time</label>
+        <input asp-for="EndTime" class="form-control" type="time" />
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="IsRepeatingWeekly" class="form-check-input" />
+        <label asp-for="IsRepeatingWeekly" class="form-check-label">Repeats Weekly</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Shift</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <script>
+        function loadStaff(role) {
+            let url = role === 'Doctor' ? '/Shift/GetDoctors' : '/Shift/GetNurses';
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    let staffSelect = document.getElementById('StaffId');
+                    staffSelect.innerHTML = '<option value="">Select Staff</option>';
+                    data.forEach(staff => {
+                        staffSelect.innerHTML += `<option value="${staff.id}">${staff.name}</option>`;
+                    });
+                });
+        }
+
+        document.getElementById('Role').addEventListener('change', function () {
+            loadStaff(this.value);
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

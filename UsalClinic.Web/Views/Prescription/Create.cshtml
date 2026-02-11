@@ -1,0 +1,106 @@
+﻿@model UsalClinic.Web.ViewModels.PrescriptionViewModel
+
+@{
+    ViewData["Title"] = "Create Prescription";
+}
+
+<style>
+    form.prescription-form {
+        max-width: 600px;
+        margin: 2rem auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 15px rgba(0,122,204,0.2);
+    }
+    h2 {
+        color: #007acc;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+    .btn-success {
+        background-color: #007acc;
+        border-color: #007acc;
+        color: white;
+    }
+    .btn-success:hover,
+    .btn-success:focus {
+        background-color: #005fa3;
+        border-color: #005fa3;
+        box-shadow: none;
+        color: white;
+    }
+    .btn-secondary {
+        background-color: #00a1cb;
+        border-color: #00a1cb;
+        color: white;
+    }
+    .btn-secondary:hover,
+    .btn-secondary:focus {
+        background-color: #007a99;
+        border-color: #007a99;
+        box-shadow: none;
+        color: white;
+    }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" class="prescription-form" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="MedicalRecordId" class="form-label"></label>
+        <select asp-for="MedicalRecordId" asp-items="ViewBag.MedicalRecords" class="form-select">
+            <option value="">-- Select Medical Record --</option>
+        </select>
+        <span asp-validation-for="MedicalRecordId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MedicationName" class="form-label"></label>
+        <input asp-for="MedicationName" class="form-control" />
+        <span asp-validation-for="MedicationName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Dosage" class="form-label"></label>
+        <input asp-for="Dosage" class="form-control" />
+        <span asp-validation-for="Dosage" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Frequency" class="form-label"></label>
+        <input asp-for="Frequency" class="form-control" />
+        <span asp-validation-for="Frequency" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Duration" class="form-label"></label>
+        <input asp-for="Duration" class="form-control" />
+        <span asp-validation-for="Duration" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Instructions" class="form-label"></label>
+        <textarea asp-for="Instructions" class="form-control"></textarea>
+        <span asp-validation-for="Instructions" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}

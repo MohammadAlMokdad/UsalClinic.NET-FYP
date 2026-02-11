@@ -1,0 +1,35 @@
+﻿@model UsalClinic.Web.ViewModels.FAQEntryViewModel
+
+@{
+    ViewData["Title"] = "Create FAQ";
+}
+
+<h2 class="text-center text-primary mb-4">Create New FAQ</h2>
+
+<form asp-action="Create" method="post" class="p-4 shadow rounded bg-white mx-auto" style="max-width: 600px;">
+    <div class="mb-3">
+        <label asp-for="Question" class="form-label fw-bold text-primary"></label>
+        <input asp-for="Question" class="form-control" />
+        <span asp-validation-for="Question" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Answer" class="form-label fw-bold text-primary"></label>
+        <textarea asp-for="Answer" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Answer" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Save
+        </button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}

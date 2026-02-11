@@ -1,0 +1,65 @@
+﻿@page
+@model ExternalLoginsModel
+@{
+    ViewData["Title"] = "External Login Providers";
+    ViewData["ActivePage"] = ManageNavPages.ExternalLogins;
+}
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<h3 class="mb-4">@ViewData["Title"]</h3>
+
+@if (Model.CurrentLogins?.Count > 0)
+{
+    <h5>Linked Logins</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Provider</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var login in Model.CurrentLogins)
+            {
+                <tr>
+                    <td id="@($"login-provider-{login.LoginProvider}")">@login.ProviderDisplayName</td>
+                    <td>
+                        @if (Model.ShowRemoveButton)
+                        {
+                            <form asp-page-handler="RemoveLogin" method="post" class="d-inline">
+                                <input type="hidden" name="LoginProvider" value="@login.LoginProvider" />
+                                <input type="hidden" name="ProviderKey" value="@login.ProviderKey" />
+                                <button type="submit" class="btn btn-sm btn-danger" title="Remove this @login.ProviderDisplayName login from your account">
+                                    Remove
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Primary login</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No external login providers are currently linked to your account.</p>
+}
+
+@if (Model.OtherLogins?.Count > 0)
+{
+    <h5 class="mt-5">Add Another Login Method</h5>
+    <p>You can link your account to an external login provider:</p>
+    <form asp-page-handler="LinkLogin" method="post" class="d-flex flex-wrap gap-2">
+        @foreach (var provider in Model.OtherLogins)
+        {
+            <button type="submit" class="btn btn-outline-primary" name="provider" value="@provider.Name">
+                <i class="bi bi-box-arrow-in-right"></i> @provider.DisplayName
+            </button>
+        }
+    </form>
+}

@@ -1,0 +1,130 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    body {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        font-family: Arial, sans-serif;
+    }
+
+    body > footer {
+        background: white;
+    }
+
+    .welc {
+        color: #00a1cb;
+    }
+
+    .login-card {
+        max-width: 900px;
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .login-left {
+        background: white;
+        color: black;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .login-left h2 {
+        font-weight: bold;
+    }
+
+    .login-right {
+        background: white;
+        padding: 40px;
+    }
+
+    .form-floating .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background-color: #005f8d;
+        border-color: #4db6ac;
+    }
+
+    .btn-primary:hover {
+        background-color: #00a1cb;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card row g-0">
+        <!-- Left Panel -->
+        <div class="col-md-5 login-left d-flex flex-column justify-content-center">
+            <h2 class="welc">Welcome to</h2>
+            <img src="/images/USAL CLINIC BLUE.png" />
+            <p>Join our platform to manage your health more efficiently.</p>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="col-md-7 login-right">
+            <h3 class="mb-4">Create a new account</h3>
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.FullName" class="form-control" autocomplete="name" placeholder="Full Name" aria-required="true" />
+                    <label asp-for="Input.FullName">Full Name</label>
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="Email" aria-required="true" />
+                    <label asp-for="Input.Email">Email</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" aria-required="true" />
+                    <label asp-for="Input.Password">Password</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirm Password" aria-required="true" />
+                    <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <button id="registerSubmit" type="submit" class="btn btn-primary w-100 mb-3">Register</button>
+            </form>
+
+            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+            {
+                <hr />
+                <div class="text-center">
+                    <p>Or register using:</p>
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            <button type="submit" class="btn btn-outline-primary me-2 mb-2" name="provider" value="@provider.Name">
+                                @provider.DisplayName
+                            </button>
+                        }
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

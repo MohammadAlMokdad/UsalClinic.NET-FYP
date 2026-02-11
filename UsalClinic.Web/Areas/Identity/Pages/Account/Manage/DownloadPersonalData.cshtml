@@ -1,0 +1,25 @@
+﻿@page
+@model DownloadPersonalDataModel
+@{
+    ViewData["Title"] = "Download Your Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h1 class="mb-3">@ViewData["Title"]</h1>
+<hr />
+
+<p>
+    You can download all your personal data stored in this application. This includes your profile information, email, and other account-related data.
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Download Data</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

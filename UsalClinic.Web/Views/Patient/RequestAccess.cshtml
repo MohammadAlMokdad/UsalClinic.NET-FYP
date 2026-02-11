@@ -1,0 +1,95 @@
+﻿@model UsalClinic.Web.ViewModels.PatientRequestViewModel
+
+@{
+    ViewData["Title"] = "Request Access";
+    var genderOptions = new List<string> { "Male", "Female" };
+    var bloodTypeOptions = new List<string> { "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-" };
+}
+
+<style>
+    h2 {
+        color: #007acc;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+
+    .btn-primary {
+        background-color: #007acc;
+        border-color: #007acc;
+    }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #005fa3;
+            border-color: #005fa3;
+            box-shadow: none;
+        }
+
+    form.request-form {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 15px rgba(0, 122, 204, 0.2);
+    }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="RequestAccess" method="post" class="request-form" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateOfBirth" class="form-label"></label>
+        <input asp-for="DateOfBirth" type="date" class="form-control" />
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Gender" class="form-label"></label>
+        <select asp-for="Gender" class="form-select" asp-items="new SelectList(genderOptions)">
+            <option value="">-- Select Gender --</option>
+        </select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Major" class="form-label"></label>
+        <input asp-for="Major" class="form-control" />
+        <span asp-validation-for="Major" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="BloodType" class="form-label"></label>
+        <select asp-for="BloodType" class="form-select" asp-items="new SelectList(bloodTypeOptions)">
+            <option value="">-- Select Blood Type --</option>
+        </select>
+        <span asp-validation-for="BloodType" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

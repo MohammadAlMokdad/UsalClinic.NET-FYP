@@ -1,0 +1,45 @@
+﻿@page
+@model ConfirmEmailChangeModel
+@{
+    ViewData["Title"] = "Confirm email change";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        font-family: Arial, sans-serif;
+    }
+
+    body > footer {
+        background: white;
+    }
+
+    .confirm-container {
+        max-width: 700px;
+        margin: 100px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .confirm-container h1 {
+        color: #005f8d;
+        font-weight: bold;
+    }
+
+    .status-message {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
+    }
+</style>
+
+<div class="confirm-container">
+    <h1>@ViewData["Title"]</h1>
+    <div class="status-message">
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+    </div>
+</div>

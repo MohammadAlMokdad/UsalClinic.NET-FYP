@@ -1,0 +1,79 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        font-family: Arial, sans-serif;
+    }
+
+    body > footer {
+        background: white;
+    }
+
+    .external-login-container {
+        max-width: 700px;
+        margin: 100px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .external-login-container h1,
+    .external-login-container h2 {
+        color: #005f8d;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .external-login-container p {
+        text-align: center;
+        color: #333;
+        font-size: 18px;
+    }
+
+    .form-floating .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background-color: #005f8d;
+        border-color: #4db6ac;
+    }
+
+    .btn-primary:hover {
+        background-color: #00a1cb;
+    }
+</style>
+
+<div class="external-login-container">
+    <h1>@ViewData["Title"]</h1>
+    <h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
+    <hr />
+
+    <p id="external-login-description" class="text-info">
+        You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.<br />
+        Please enter an email address for this site below and click the Register button to finish logging in.
+    </p>
+
+    <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger text-center" role="alert"></div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email." />
+            <label asp-for="Input.Email" class="form-label"></label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,280 @@
+﻿@model UsalClinic.Web.ViewModels.UserLandingViewModel
+
+@{
+    ViewData["Title"] = "User Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        font-family: Arial, sans-serif;
+    }
+
+        body > footer {
+            background: white;
+        }
+
+    .dashboard-container {
+        max-width: 1100px; /* ⬅️ made wider */
+        margin: 100px auto;
+        background: white;
+        padding: 50px 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        color: #005f8d;
+    }
+
+        .dashboard-container h1 {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .dashboard-container p {
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+    .button-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin: 30px 0;
+    }
+
+        .button-grid a {
+            min-width: 150px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+
+    .dashboard-container a.logout-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #00a1cb;
+        font-weight: bold;
+        font-size: 1.05rem;
+        text-align: center;
+        display: block;
+    }
+
+        .dashboard-container a.logout-link:hover {
+            text-decoration: underline;
+        }
+
+    #calendar {
+        margin-top: 40px;
+        background: #fefefe;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Optional: Better text size for calendar */
+    .fc-event-title {
+        font-size: 1rem;
+        font-weight: 500;
+    }
+
+    .fc-event-time {
+        font-weight: 600;
+    }
+    /* Inside your existing <style> */
+    .fc .fc-daygrid-event {
+        font-size: 1rem; /* Increase font size */
+        padding: 4px 6px;
+        white-space: normal; /* Allow text wrapping */
+    }
+
+    .fc-event-title {
+        white-space: normal !important; /* Override default nowrap */
+        overflow: visible !important;
+    }
+
+    .fc-daygrid-event-dot {
+        display: none; /* Optional: remove dot to give more space */
+    }
+
+</style>
+
+
+<div class="dashboard-container">
+    <h1>Welcome, @Model.Fullname!</h1>
+    <p>Your email is: @Model.Email</p>
+
+    <div class="button-grid">
+      
+    </div>
+    <div id="calendar"></div>
+
+    <p><a class="logout-link" href="/Identity/Account/Logout">Logout</a></p>
+</div>
+<!-- Appointment Details Modal -->
+<div class="modal fade" id="appointmentDetailModal" tabindex="-1" aria-labelledby="appointmentDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="appointmentDetailModalLabel">Appointment Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="appointmentModalBody">
+                <!-- AJAX-loaded partial view goes here -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Urgent Button -->
+<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#urgentModal">Send Urgent Alert</button>
+
+<!-- Modal -->
+<div class="modal fade" id="urgentModal" tabindex="-1" aria-labelledby="urgentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="urgentForm">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="urgentModalLabel">Emergency Alert</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label for="departmentSelect" class="form-label">Select Department</label>
+                        <select id="departmentSelect" class="form-select" name="departmentId">
+                            <option value="">-- Select Department --</option>
+                            @foreach (var dept in ViewBag.Departments)
+                            {
+                                <option value="@dept.Value">@dept.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="roomSelect" class="form-label">Select Room</label>
+                        <select id="roomSelect" class="form-select" name="roomId">
+                            <option value="">-- Select Room --</option>
+                            @* Options will be loaded dynamically *@
+                        </select>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Send Alert</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+                document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: 600,
+                events: @Html.Raw(Json.Serialize(ViewBag.CalendarEvents)),
+                eventClick: function (info) {
+                    var id = info.event.id;
+
+                    // Load partial view via AJAX
+                    $('#appointmentModalBody').load('/Appointment/DetailModal/' + id, function () {
+                        var modal = new bootstrap.Modal(document.getElementById('appointmentDetailModal'));
+                        modal.show();
+                    });
+
+                    // Prevent default
+                    info.jsEvent.preventDefault();
+                },
+                eventDidMount: function (info) {
+                    if (info.event.extendedProps.description) {
+                        info.el.setAttribute('title', info.event.extendedProps.description);
+                    }
+                }
+            });
+
+            calendar.render();
+        });
+             $(document).ready(function () {
+            $('#departmentSelect').on('change', function () {
+                var departmentId = $(this).val();
+                $('#roomSelect').html('<option>Loading...</option>');
+
+                $.ajax({
+                    url: '/Rooms/GetRoomsByDepartment',
+                    type: 'GET',
+                    data: { departmentId: departmentId },
+                    success: function (rooms) {
+                        $('#roomSelect').empty();
+                        if (rooms.length > 0) {
+                            $.each(rooms, function (index, room) {
+                                $('#roomSelect').append(
+                                    $('<option></option>').val(room.id).text(room.name)
+                                );
+                            });
+                        } else {
+                            $('#roomSelect').append('<option>No rooms found</option>');
+                        }
+                    },
+                    error: function () {
+                        alert('Could not load rooms');
+                    }
+                });
+            });
+        });
+              $('#urgentForm').submit(function (e) {
+            e.preventDefault();
+            const departmentId = $('#departmentSelect').val();
+            const roomId = $('#roomSelect').val();
+
+
+        // Check if department or room is not selected
+        if (!departmentId || !roomId) {
+            showToast('Please select both a department and a room.', 'warning');
+            return;
+        }
+
+            fetch('/User/SendUrgentAlert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `departmentId=${departmentId}&roomId=${roomId}`
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Nurse not found');
+                return res.text();
+            })
+            .then(msg => {
+                showToast(msg, 'success');
+                 $('#urgentModal').modal('hide');
+            })
+            .catch(err => showToast('Error: ' + err.message, 'error'));
+        });
+                      function showToast(message, type = 'success') {
+            const toastEl = document.getElementById('toastMessage');
+            const toastBody = document.getElementById('toastBody');
+
+            toastBody.innerText = message;
+
+            // Clean up previous background classes
+            toastEl.className = 'toast align-items-center text-white border-0';
+
+            // Set background color based on type (only success or error)
+            if (type === 'error') {
+                toastEl.classList.add('bg-danger');
+            } else {
+                toastEl.classList.add('bg-success');
+            }
+
+            const bsToast = new bootstrap.Toast(toastEl);
+            bsToast.show();
+        }
+
+
+    </script>
+}

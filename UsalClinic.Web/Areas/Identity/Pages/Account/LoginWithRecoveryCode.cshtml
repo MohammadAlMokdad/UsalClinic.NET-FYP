@@ -1,0 +1,74 @@
+﻿@page
+@model LoginWithRecoveryCodeModel
+@{
+    ViewData["Title"] = "Recovery code verification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        font-family: Arial, sans-serif;
+    }
+
+    body > footer {
+        background: white;
+    }
+
+    .recovery-code-container {
+        max-width: 700px;
+        margin: 100px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .recovery-code-container h1 {
+        color: #005f8d;
+        font-weight: bold;
+    }
+
+    .recovery-code-container p {
+        color: #333;
+        font-size: 18px;
+    }
+
+    .form-floating .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background-color: #005f8d;
+        border-color: #4db6ac;
+    }
+
+    .btn-primary:hover {
+        background-color: #00a1cb;
+    }
+</style>
+
+<div class="recovery-code-container">
+    <h1>@ViewData["Title"]</h1>
+    <hr />
+    <p>
+        You have requested to log in with a recovery code. This login will not be remembered until you provide
+        an authenticator app code at log in or disable 2FA and log in again.
+    </p>
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Input.RecoveryCode" class="form-control" autocomplete="off" placeholder="RecoveryCode" />
+            <label asp-for="Input.RecoveryCode" class="form-label"></label>
+            <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

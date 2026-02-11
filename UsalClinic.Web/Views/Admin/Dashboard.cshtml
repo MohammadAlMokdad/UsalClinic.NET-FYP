@@ -1,0 +1,344 @@
+﻿@model UsalClinic.Web.ViewModels.AdminDashboardViewModel
+
+@{
+    Layout = null; // You can use "_AdminLayout.cshtml" if preferred
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin</title>
+    <!-- Bootstrap Styles-->
+    <link href="~/assets/css/bootstrap.css" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="~/assets/css/font-awesome.css" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="~/assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="~/assets/css/custom-styles.css" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <style>
+        #calendar {
+            max-width: 100%;
+            margin: 20px auto;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="">Usal Clinic</a>
+            </div>
+
+            <ul class="nav navbar-top-links navbar-right">
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a href="/Identity/Account/Manage"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/"
+                                  style="display:inline;">
+                                <button type="submit" class="btn btn-link" style="color: #333; text-decoration: none; padding-left: 15px;">
+                                    <i class="fa fa-sign-out fa-fw"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+        </nav>
+        <!--/. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+
+                    <li>
+                        <a class="active-menu" href="/Admin/Dashboard"><i class="fa fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="/Home/Privacy"><i class="fa fa-shield"></i> Privacy</a>
+                    </li>
+                    <li>
+                        <a href="/User/ApproveRequests"><i class="fa fa-desktop"></i> Approve</a>
+                    </li>
+                    <li>
+                        <a href="/FAQEntry"><i class="fa fa-desktop"></i> FAQ</a>
+                    </li>
+                    <li>
+                        <a href="/Appointment"><i class="fa fa-calendar"></i> Appointments</a>
+                    </li>
+                    <li>
+                        <a href="/Departments"><i class="fa fa-hospital-o"></i> Departments</a>
+                    </li>
+                    <li>
+                        <a href="/Patient/RequestAccess"><i class="fa fa-envelope"></i> Requests</a>
+                    </li>
+                    <li>
+                        <a href="/MedicalRecords"><i class="fa fa-file"></i> Medical Records</a>
+                    </li>
+                    <li>
+                        <a href="/Rooms">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-door-closed" viewBox="0 0 16 16">
+                                    <path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3zm1 13h8V2H4z" />
+                                    <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0" />
+                                </svg>
+                            </i> Rooms
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Doctor"><i class="fa fa-user-md"></i> Doctors</a>
+                    </li>
+                    <li>
+                        <a href="/Patient"><i class="fa fa-users"></i> Patients</a>
+                    </li>
+                    <li>
+                        <a href="/Prescription">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-journal-check" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0" />
+                                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+                                </svg>
+                            </i> Prescriptions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Nurse">
+                            <i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-bandaid" viewBox="0 0 16 16">
+                                    <path d="M14.121 1.879a3 3 0 0 0-4.242 0L8.733 3.026l4.261 4.26 1.127-1.165a3 3 0 0 0 0-4.242M12.293 8 8.027 3.734 3.738 8.031 8 12.293zm-5.006 4.994L3.03 8.737 1.879 9.88a3 3 0 0 0 4.241 4.24l.006-.006 1.16-1.121ZM2.679 7.676l6.492-6.504a4 4 0 0 1 5.66 5.653l-1.477 1.529-5.006 5.006-1.523 1.472a4 4 0 0 1-5.653-5.66l.001-.002 1.505-1.492z" />
+                                    <path d="M5.56 7.646a.5.5 0 1 1-.706.708.5.5 0 0 1 .707-.708Zm1.415-1.414a.5.5 0 1 1-.707.707.5.5 0 0 1 .707-.707M8.39 4.818a.5.5 0 1 1-.708.707.5.5 0 0 1 .707-.707Zm0 5.657a.5.5 0 1 1-.708.707.5.5 0 0 1 .707-.707ZM9.803 9.06a.5.5 0 1 1-.707.708.5.5 0 0 1 .707-.707Zm1.414-1.414a.5.5 0 1 1-.706.708.5.5 0 0 1 .707-.708ZM6.975 9.06a.5.5 0 1 1-.707.708.5.5 0 0 1 .707-.707ZM8.39 7.646a.5.5 0 1 1-.708.708.5.5 0 0 1 .707-.708Zm1.413-1.414a.5.5 0 1 1-.707.707.5.5 0 0 1 .707-.707" />
+                                </svg>
+                            </i> Nurses
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/Shift"><i class="fa fa-clock-o"></i> Shifts</a>
+                    </li>
+                    
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+        <div id="page-wrapper">
+            <div id="page-inner">
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="page-header">
+                            Dashboard <small>Welcome Admin!</small>
+                        </h1>
+
+                    </div>
+                </div>
+                <!-- /. ROW  -->
+
+                <div class="row">
+
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                        <div class="panel panel-primary text-center no-boder bg-color-brown">
+                            <div class="panel-left pull-left brown">
+                                <i class="fa fa-calendar fa-5x"></i>
+                            </div>
+                            <div class="panel-right pull-right">
+                                <h3>@Model.AppointmentCount</h3>
+                                <strong>Appointments</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                        <div class="panel panel-primary text-center no-boder bg-color-green">
+                            <div class="panel-left pull-left green">
+                                <i class="fa fa-users fa-5x"></i>
+                            </div>
+                            <div class="panel-right pull-right">
+                                <h3>@Model.PatientCount</h3>
+                                <strong>Patients</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                        <div class="panel panel-primary text-center no-boder bg-color-blue">
+                            <div class="panel-left pull-left blue">
+                                <i class="fa fa-user-md fa-5x"></i>
+                            </div>
+                            <div class="panel-right pull-right">
+                                <h3>@Model.DoctorCount</h3>
+                                <strong>Doctors</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+                        <div class="panel panel-primary text-center no-boder bg-color-red">
+                            <div class="panel-left pull-left red">
+                                <i class="fa fa-medkit fa-5x"></i>
+                            </div>
+                            <div class="panel-right pull-right">
+                                <h3>@Model.NurseCount</h3>
+                                <strong>Nurses</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Calendar  -->
+                <div id="calendar"></div>
+                <!-- Appointment Details Modal -->
+                <div class="modal fade" id="appointmentDetailModal" tabindex="-1" aria-labelledby="appointmentDetailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="appointmentDetailModalLabel">Appointment Details</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="appointmentModalBody">
+                                <!-- AJAX-loaded partial view goes here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /. ROW  -->
+                <footer>
+                    <a href="/Home/Privacy">&copy; 2025 Usal Clinic | All Rights Reserved</a>
+                </footer>
+            </div>
+            <!-- /. PAGE INNER  -->
+        </div>
+        <!-- /. PAGE WRAPPER  -->
+    </div>
+    <!-- /. WRAPPER  -->
+    <!-- JS Scripts-->
+    <!-- jQuery Js -->
+    <script src="~/assets/js/jquery-1.10.2.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="~/assets/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Js -->
+    <script src="~/assets/js/jquery.metisMenu.js"></script>
+    <!-- Morris Chart Js -->
+    <script src="~/assets/js/morris/raphael-2.1.0.min.js"></script>
+    <script src="~/assets/js/morris/morris.js"></script>
+    <script src="~/assets/js/easypiechart.js"></script>
+    <script src="~/assets/js/easypiechart-data.js"></script>
+    <!-- Custom Js -->
+    <script src="~/assets/js/custom-scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    height: 600,
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: @Html.Raw(Json.Serialize(ViewBag.CalendarEvents)),
+                    eventClick: function (info) {
+                        var id = info.event.id;
+
+                        // Load appointment details in modal
+                        $('#appointmentModalBody').load('/Appointment/DetailModal/' + id, function () {
+                            var modal = new bootstrap.Modal(document.getElementById('appointmentDetailModal'));
+                            modal.show();
+                        });
+
+                        info.jsEvent.preventDefault();
+                    },
+                    eventDidMount: function (info) {
+                        if (info.event.extendedProps.description) {
+                            info.el.setAttribute('title', info.event.extendedProps.description);
+                        }
+                    }
+                });
+                calendar.render();
+            }
+        });
+
+        // Department -> Room AJAX
+        $(document).ready(function () {
+            $('#departmentSelect').on('change', function () {
+                var departmentId = $(this).val();
+                $('#roomSelect').html('<option>Loading...</option>');
+
+                $.ajax({
+                    url: '/Rooms/GetRoomsByDepartment',
+                    type: 'GET',
+                    data: { departmentId: departmentId },
+                    success: function (rooms) {
+                        $('#roomSelect').empty();
+                        if (rooms.length > 0) {
+                            $.each(rooms, function (index, room) {
+                                $('#roomSelect').append(
+                                    $('<option></option>').val(room.id).text(room.name)
+                                );
+                            });
+                        } else {
+                            $('#roomSelect').append('<option>No rooms found</option>');
+                        }
+                    },
+                    error: function () {
+                        alert('Could not load rooms');
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', 'a[href="/Home/Privacy"]', function (e) {
+            e.preventDefault();
+
+            $('#page-inner').html('<div class="text-center my-5"><i class="fa fa-spinner fa-spin fa-2x"></i> Loading...</div>');
+
+            $('#page-inner').load("/Home/Privacy", function (response, status) {
+                if (status === "error") {
+                    $('#page-inner').html("<div class='alert alert-danger'>Failed to load content.</div>");
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+

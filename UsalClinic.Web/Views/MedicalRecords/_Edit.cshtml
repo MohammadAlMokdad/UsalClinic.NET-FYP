@@ -1,0 +1,76 @@
+﻿@model UsalClinic.Web.ViewModels.MedicalRecordViewModel
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 700;
+        border-bottom: none;
+    }
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+    .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    .modal-footer {
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        z-index: 1000;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+
+<form id="editForm" asp-action="Edit" method="post" novalidate>
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h5 class="modal-title">Edit Medical Record</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="DoctorId" class="form-label"></label>
+            <select asp-for="DoctorId" asp-items="ViewBag.Doctors" class="form-select"></select>
+            <span asp-validation-for="DoctorId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PatientId" class="form-label"></label>
+            <select asp-for="PatientId" asp-items="ViewBag.Patients" class="form-select"></select>
+            <span asp-validation-for="PatientId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Diagnosis" class="form-label"></label>
+            <textarea asp-for="Diagnosis" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Diagnosis" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Prescription" class="form-label"></label>
+            <textarea asp-for="Prescription" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Prescription" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label"></label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

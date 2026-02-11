@@ -1,0 +1,125 @@
+﻿@model IEnumerable<UsalClinic.Application.Models.PatientRequestDto>
+
+@{
+    ViewData["Title"] = "Approve Patient Requests";
+}
+
+<style>
+    h2 {
+        color: #007acc;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover,
+        .btn-success:focus {
+            background-color: #218838;
+            border-color: #1e7e34;
+            box-shadow: none;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover,
+        .btn-danger:focus {
+            background-color: #b02a37;
+            border-color: #b02a37;
+            box-shadow: none;
+        }
+
+    .table thead tr {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 600;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e0f7ff;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: nowrap;
+    }
+
+    .table-container {
+        max-width: 95%;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 15px rgba(0, 122, 204, 0.15);
+    }
+</style>
+
+<div class="table-container">
+    <h2>@ViewData["Title"]</h2>
+
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>Address</th>
+                <th>Major</th>
+                <th>Blood Type</th>
+                <th style="width: 180px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var request in Model)
+                {
+                    <tr>
+                        <td>@request.FullName</td>
+                        <td>@request.UserName</td>
+                        <td>@request.Gender</td>
+                        <td>@request.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                        <td>@request.Address</td>
+                        <td>@request.Major</td>
+                        <td>@request.BloodType</td>
+                        <td class="action-buttons">
+                            <form asp-controller="User" asp-action="Approve" method="post">
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@request.Id" />
+                                <button type="submit" class="btn btn-success btn-sm" title="Approve">
+                                    <i class="bi bi-check-circle"></i> Approve
+                                </button>
+                            </form>
+                            <form asp-controller="User" asp-action="Reject" method="post">
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@request.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" title="Reject">
+                                    <i class="bi bi-x-circle"></i> Reject
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No pending requests found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

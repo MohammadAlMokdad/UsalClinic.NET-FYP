@@ -1,0 +1,54 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700,600);
+@import url(https://fonts.googleapis.com/css?family=Oswald:400,700);
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* Usal Clinic Navbar Customization */
+.custom-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+    .custom-navbar .navbar-brand span {
+        color: #005f8d;
+        font-size: 1.25rem;
+    }
+
+    .custom-navbar .nav-link {
+        color: #005f8d !important;
+        font-weight: 500;
+        margin-left: 15px;
+        margin-right: 15px;
+        transition: color 0.3s ease;
+    }
+
+        .custom-navbar .nav-link:hover,
+        .custom-navbar .nav-link:focus {
+            color: #003f60 !important;
+        }
+
+    .custom-navbar .navbar-toggler {
+        border-color: #005f8d;
+    }

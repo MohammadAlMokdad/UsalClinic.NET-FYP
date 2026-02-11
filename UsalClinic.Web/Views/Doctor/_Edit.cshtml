@@ -1,0 +1,87 @@
+﻿@model UsalClinic.Web.ViewModels.DoctorViewModel
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 700;
+        border-bottom: none;
+    }
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+    .modal-body {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    .modal-footer {
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        z-index: 1000;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+
+<form asp-action="Edit" method="post" novalidate>
+    <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Doctor</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="mb-3">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Profession" class="form-label"></label>
+            <input asp-for="Profession" class="form-control" />
+            <span asp-validation-for="Profession" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="YearsOfExperience" class="form-label"></label>
+            <input asp-for="YearsOfExperience" type="number" class="form-control" />
+            <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label"></label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Gender" class="form-label"></label>
+            <select asp-for="Gender" class="form-select">
+                <option value="">-- Select --</option>
+                <option value="Male" selected="@(Model.Gender == "Male")">Male</option>
+                <option value="Female" selected="@(Model.Gender == "Female")">Female</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DateOfBirth" class="form-label"></label>
+            <input asp-for="DateOfBirth" type="date" class="form-control" />
+            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+  
+}

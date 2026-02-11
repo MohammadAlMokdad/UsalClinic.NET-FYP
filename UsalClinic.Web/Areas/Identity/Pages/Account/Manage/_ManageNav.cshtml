@@ -1,0 +1,52 @@
+﻿@using UsalClinic.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+<style>
+    .manage-nav .nav-link {
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #f2f9fc;
+        color: #005f8d;
+        transition: background-color 0.2s;
+        font-weight: 500;
+    }
+
+    .manage-nav .nav-link:hover {
+        background-color: #e0f3fc;
+        color: #007acc;
+    }
+
+    .manage-nav .nav-link.active {
+        background-color: #00a1cb;
+        color: white !important;
+        font-weight: bold;
+    }
+</style>
+
+<ul class="nav flex-column manage-nav">
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
+    </li>
+    @if (hasExternalLogins)
+    {
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" id="external-login" asp-page="./ExternalLogins">External logins</a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a>
+    </li>
+</ul>

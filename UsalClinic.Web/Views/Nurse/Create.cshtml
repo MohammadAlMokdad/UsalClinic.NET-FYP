@@ -1,0 +1,114 @@
+﻿@model UsalClinic.Web.ViewModels.NurseViewModel
+
+@{
+    ViewData["Title"] = "Add New Nurse";
+}
+
+<style>
+    form.nurse-form {
+        max-width: 600px;
+        margin: 2rem auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 15px rgba(0,122,204,0.2);
+    }
+
+    h2 {
+        color: #007acc;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+
+    .btn-success {
+        background-color: #007acc;
+        border-color: #007acc;
+        color: white;
+    }
+
+        .btn-success:hover,
+        .btn-success:focus {
+            background-color: #005fa3;
+            border-color: #005fa3;
+            box-shadow: none;
+            color: white;
+        }
+
+    .btn-secondary {
+        background-color: #00a1cb;
+        border-color: #00a1cb;
+        color: white;
+    }
+
+        .btn-secondary:hover,
+        .btn-secondary:focus {
+            background-color: #007a99;
+            border-color: #007a99;
+            box-shadow: none;
+            color: white;
+        }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" class="nurse-form" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Gender" class="form-label"></label>
+        <select asp-for="Gender" class="form-select">
+            <option value="">-- Select --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateOfBirth" class="form-label"></label>
+        <input asp-for="DateOfBirth" type="date" class="form-control" />
+        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="YearsOfExperience" class="form-label"></label>
+        <input asp-for="YearsOfExperience" type="number" class="form-control" />
+        <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}

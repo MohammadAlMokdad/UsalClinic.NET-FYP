@@ -1,0 +1,221 @@
+﻿@model IEnumerable<UsalClinic.Web.ViewModels.RoomViewModel>
+
+@{
+    ViewData["Title"] = "Rooms for Department: " + ViewData["DepartmentName"];
+}
+
+<style>
+    .table thead tr {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 600;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e0f7ff;
+    }
+
+    .btn-primary {
+        background-color: #007acc;
+        border-color: #007acc;
+    }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #005fa3;
+            border-color: #005fa3;
+            box-shadow: none;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+
+        .btn-warning:hover,
+        .btn-warning:focus {
+            background-color: #d39e00;
+            border-color: #d39e00;
+            box-shadow: none;
+            color: #212529;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover,
+        .btn-danger:focus {
+            background-color: #b02a37;
+            border-color: #b02a37;
+            box-shadow: none;
+        }
+
+    .btn i {
+        vertical-align: middle;
+        margin-right: 0.25rem;
+    }
+</style>
+
+<h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Created At</th>
+                @if (User.IsInRole("Admin"))
+                {
+                    <th style="width: 160px;">Actions</th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var room in Model)
+                {
+                    <tr>
+                        <td>@room.RoomNumber</td>
+                        <td>@room.RoomType</td>
+                        <td>@room.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <button type="button" class="btn btn-warning btn-sm btn-edit me-2" data-id="@room.Id" title="Edit Room">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="@room.Id" title="Delete Room">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="@(User.IsInRole("Admin") ? 4 : 3)" class="text-center text-muted">No rooms found for this department.</td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<a asp-controller="Departments" asp-action="Index" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Back to Departments
+</a>
+
+<!-- Edit Room Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc); color: white; font-weight: 700;">
+                <h5 class="modal-title" id="editModalLabel">Edit Room</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalBody">
+                <!-- AJAX loaded content -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #dc3545, #b02a37); color: white; font-weight: 700;">
+                <h5 class="modal-title" id="deleteConfirmLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">Are you sure you want to delete this room?</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+                        // Extract CSRF token from the hidden input on the page
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        // Globally add CSRF token to all fetch() or AJAX calls if needed
+        function getCsrfHeaders() {
+            return csrfToken
+                ? { 'RequestVerificationToken': csrfToken }
+                : {};
+        }
+        // Edit button logic
+        $(document).on('click', '.btn-edit', function () {
+            var id = $(this).data('id');
+            $("#editModalBody").load('/Rooms/EditDepartment/' + id, function () {
+                var modal = new bootstrap.Modal(document.getElementById('editModal'));
+                modal.show();
+                $.validator.unobtrusive.parse($('#editModal'));
+            });
+        });
+
+        // Delete button logic
+        $(document).on('click', '.btn-delete', function () {
+            var id = $(this).data('id');
+            $('#confirmDeleteBtn').attr('href', '/Rooms/DeleteDepartment/' + id);
+            var modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+        });
+                // Intercept form submission inside modals
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (form.closest('#editModal')) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: { 
+                        'X-Requested-With': 'XMLHttpRequest',
+                        ...getCsrfHeaders()
+                    }
+                })
+                .then(res => {
+                    if (res.status === 200) return res.text();
+                    if (res.redirected) {
+                        window.location.href = res.url;
+                        return null;
+                    }
+                    if (res.status === 403) {
+                        window.location.href = '/Account/AccessDenied';
+                        return null;
+                    }
+                })
+                .then(html => {
+                    if (!html) return;
+
+                    if (html.includes('<form') && html.toLowerCase().includes('validation-summary')) {
+                        // Validation error — re-render form inside modal
+                        document.getElementById('editModalBody').innerHTML = html;
+
+                    } else {
+                        // Success — close modal & reload page or update UI
+                        location.reload();
+                    }
+                })
+                .catch(() => location.reload());
+            }
+        });
+    </script>
+
+}
+

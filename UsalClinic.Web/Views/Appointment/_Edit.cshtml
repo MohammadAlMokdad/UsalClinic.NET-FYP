@@ -1,0 +1,98 @@
+﻿@model UsalClinic.Web.ViewModels.AppointmentViewModel
+
+<style>
+    /* Modal header with gradient background */
+    .modal-header {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 700;
+        border-bottom: none;
+    }
+
+    /* Modal title */
+    .modal-title {
+        font-size: 1.25rem;
+    }
+
+    /* Primary button */
+    .btn-primary {
+        background-color: #007acc;
+        border-color: #007acc;
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+        background-color: #005fa3;
+        border-color: #005fa3;
+        box-shadow: none;
+    }
+
+    /* Secondary button */
+    .btn-secondary {
+        background-color: #00a1cb;
+        border-color: #00a1cb;
+        color: white;
+    }
+    .btn-secondary:hover,
+    .btn-secondary:focus {
+        background-color: #007a99;
+        border-color: #007a99;
+        color: white;
+        box-shadow: none;
+    }
+
+    /* Form labels inside modal */
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+</style>
+
+<form id="editForm" asp-action="Edit" method="post" novalidate>
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label asp-for="DoctorId" class="form-label"></label>
+            <select asp-for="DoctorId" asp-items="Model.Doctors" class="form-select"></select>
+            <span asp-validation-for="DoctorId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PatientId" class="form-label"></label>
+            <select asp-for="PatientId" asp-items="Model.Patients" class="form-select"></select>
+            <span asp-validation-for="PatientId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="AppointmentDate" class="form-label"></label>
+            <input asp-for="AppointmentDate" class="form-control" type="datetime-local" />
+            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label"></label>
+            <input asp-for="Status" class="form-control" />
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Notes" class="form-label"></label>
+            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

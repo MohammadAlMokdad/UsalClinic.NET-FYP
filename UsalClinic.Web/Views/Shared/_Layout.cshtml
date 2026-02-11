@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - UsalClinic.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/UsalClinic.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light shadow-sm custom-navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/USAL CLINIC BLUE.png" alt="Usal Clinic Logo" width="30" height="30" class="me-2" />
+                    <span class="fw-bold">Usal Clinic</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        
+
+                        
+                        @if (User.IsInRole("Patient"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="FAQEntry" asp-action="Index">FAQ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Appointment" asp-action="Index">Appointments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Departments" asp-action="Index">Departments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Patient" asp-action="RequestAccess">Request</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Patient" asp-action="Index">My Records</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Doctor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Doctor" asp-action="Index">Doctors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Patient" asp-action="Index">Patients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="FAQEntry" asp-action="Index">FAQ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Appointment" asp-action="Index">Appointments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Departments" asp-action="Index">Departments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Patient" asp-action="RequestAccess">Request</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Nurse"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Doctor" asp-action="Index">Doctors</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Patient" asp-action="Index">Patients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="FAQEntry" asp-action="Index">FAQ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Appointment" asp-action="Index">Appointments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Departments" asp-action="Index">Departments</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Patient" asp-action="RequestAccess">Request</a>
+                            </li>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()       
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+&copy; 2025 - UsalClinic.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color:#00a1cb;">Privacy</a>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @* Shared Toast Message *@
+    @if (TempData["ToastMessage"] != null && TempData["ToastType"] != null)
+    {
+        var toastType = TempData["ToastType"]?.ToString();
+        var toastColor = toastType == "success" ? "bg-success" : "bg-danger";
+        <script>
+            $(document).ready(function () {
+                const toastBody = document.getElementById('toastBody');
+                const toastElement = document.getElementById('toastMessage');
+
+                toastBody.textContent = '@TempData["ToastMessage"]';
+                toastElement.className = 'toast align-items-center text-white @toastColor border-0';
+                new bootstrap.Toast(toastElement, { delay: 4000 }).show();
+            });
+        </script>
+    }
+    @* Toast Message Bootstrap5 *@
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; width: 350px;">
+        <div id="toastMessage" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fs-4 fw-bold" id="toastBody">Message</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

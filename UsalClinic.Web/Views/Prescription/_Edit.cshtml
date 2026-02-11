@@ -1,0 +1,78 @@
+﻿@model UsalClinic.Web.ViewModels.PrescriptionViewModel
+
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #5ddcff, #00a1cb, #007acc);
+        color: white;
+        font-weight: 700;
+        border-bottom: none;
+    }
+    label {
+        font-weight: 600;
+        color: #005fa3;
+    }
+    .modal-body {
+        max-height: 100vh;
+        overflow-y: auto;
+    }
+    .modal-footer {
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        z-index: 1000;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+
+<form asp-action="EditMedical" method="post" novalidate>
+    @Html.AntiForgeryToken()
+
+
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="patientId" />
+        <input type="hidden" asp-for="MedicalRecordId" />
+
+        <div class="mb-3">
+            <label asp-for="MedicationName" class="form-label"></label>
+            <input asp-for="MedicationName" class="form-control" />
+            <span asp-validation-for="MedicationName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Dosage" class="form-label"></label>
+            <input asp-for="Dosage" class="form-control" />
+            <span asp-validation-for="Dosage" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Frequency" class="form-label"></label>
+            <input asp-for="Frequency" class="form-control" />
+            <span asp-validation-for="Frequency" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Duration" class="form-label"></label>
+            <input asp-for="Duration" class="form-control" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Instructions" class="form-label"></label>
+            <textarea asp-for="Instructions" class="form-control"></textarea>
+            <span asp-validation-for="Instructions" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}

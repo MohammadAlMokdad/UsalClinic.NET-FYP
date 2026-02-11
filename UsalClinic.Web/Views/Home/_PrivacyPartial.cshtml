@@ -1,0 +1,121 @@
+﻿@model dynamic
+
+<style>
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    body {
+        background-color: #f9f9f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .privacy-container {
+        max-width: 900px;
+        margin: 50px auto;
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+        .privacy-container h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        .privacy-container h2 {
+            color: #0066cc;
+            margin-top: 30px;
+            border-left: 4px solid #0066cc;
+            padding-left: 10px;
+            font-size: 1.4rem;
+        }
+
+        .privacy-container p {
+            line-height: 1.7;
+            margin: 10px 0;
+        }
+
+        .privacy-container ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+            .privacy-container ul li {
+                margin-bottom: 8px;
+                list-style-type: disc;
+            }
+
+                .privacy-container ul li strong {
+                    color: #333;
+                }
+
+    .contact-box {
+        background: #f0f8ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+        border-left: 5px solid #0066cc;
+    }
+
+        .contact-box h2 {
+            margin-top: 0;
+            color: #00509e;
+        }
+</style>
+
+<div class="privacy-container">
+    <h1>Privacy Policy</h1>
+
+    <p>At <strong>Usal Clinic</strong>, your privacy is a top priority...</p>
+
+    <h2>1. Information We Collect</h2>
+    <ul>
+        <li><strong>Personal Details:</strong> Name, contact info, date of birth, ID numbers.</li>
+        <li><strong>Medical Data:</strong> History, diagnosis, treatment plans, prescriptions.</li>
+        <li><strong>Appointments & Billing:</strong> Visit logs, insurance details, payment data.</li>
+    </ul>
+
+    <h2>2. How We Use Your Information</h2>
+    <ul>
+        <li>Deliver high-quality healthcare services</li>
+        <li>Manage appointment scheduling and communication</li>
+        <li>Process billing and insurance claims</li>
+        <li>Ensure legal and medical compliance</li>
+    </ul>
+
+    <h2>3. Data Protection</h2>
+    <p>We use secure digital systems...</p>
+
+    <h2>4. Sharing Information</h2>
+    <p>We never sell or rent your personal data...</p>
+
+    <h2>5. Your Rights</h2>
+    <ul>
+        <li>Access your personal health records</li>
+        <li>Request corrections to inaccurate information</li>
+        <li>Request deletion, subject to medical/legal limitations</li>
+    </ul>
+
+    <div class="contact-box">
+        <h2>6. Contact Us</h2>
+        <p>If you have any questions or privacy concerns...</p>
+    </div>
+</div>
